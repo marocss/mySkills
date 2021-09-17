@@ -28,10 +28,11 @@ export function Home() {
         placeholderTextColor="#556"
         onChangeText={setSkillToAdd}
       />
-      <TouchableOpacity style={styles.button} activeOpacity={0.77789}>
-        <Text style={styles.buttonText} onPress={handleAddNewSkill}>
-          Add
-        </Text>
+      <TouchableOpacity
+        style={styles.button}
+        activeOpacity={0.77789}
+        onPress={handleAddNewSkill}>
+        <Text style={styles.buttonText}>Add</Text>
       </TouchableOpacity>
 
       {mySkills.length > 0 ? (
@@ -39,7 +40,6 @@ export function Home() {
           <Text style={[styles.title, { marginTop: 47, marginBottom: 17 }]}>
             My Skills
           </Text>
-          {console.log(mySkills)}
           {mySkills.map(skill => (
             <TouchableOpacity
               key={skill}
