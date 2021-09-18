@@ -11,13 +11,33 @@ import {
 import { Button } from '../components/Button';
 import { SkillCard } from '../components/SkillCard';
 
+interface SkillData {
+  id: string;
+  skill: string;
+}
+
 export const Home = () => {
   const [skillToAdd, setSkillToAdd] = useState('');
-  const [mySkills, setMySkills] = useState([]);
+  const [mySkills, setMySkills] = useState<SkillData[]>([]);
   const [greeting, setGreeting] = useState('');
 
   function handleAddNewSkill() {
-    setMySkills(myCurrentSkills => [...myCurrentSkills, skillToAdd]);
+    if (skillToAdd === '') {
+      return;
+    }
+
+    const data = {
+      id: String(new Date().getTime()),
+      skill: skillToAdd,
+    };
+
+    setMySkills(myCurrentSkills => [...myCurrentSkills, data]);
+  }
+
+  function handleRemoveSkill(id: string) {
+    setMySkills(myCurrentSkills =>
+      myCurrentSkills.filter(item => item.id !== id),
+    );
   }
 
   useEffect(() => {
@@ -46,16 +66,23 @@ export const Home = () => {
         onChangeText={setSkillToAdd}
       />
 
-      <Button onPress={handleAddNewSkill} />
+      <Button onPress={handleAddNewSkill} text="Add" />
 
-      <Text style={[styles.title, { marginTop: 47, marginBottom: 17 }]}>
-        My Skills
-      </Text>
+      {mySkills.length !== 0 && (
+        <Text style={[styles.title, { marginTop: 47, marginBottom: 17 }]}>
+          My Skills
+        </Text>
+      )}
 
       <FlatList
         data={mySkills}
-        key={item => item}
-        renderItem={({ item }) => <SkillCard skill={item} />}
+        keyExtractor={item => item.id}
+        renderItem={({ item }) => (
+          <SkillCard
+            onPress={() => handleRemoveSkill(item.id)}
+            text={item.skill}
+          />
+        )}
       />
     </View>
   );
@@ -91,17 +118,5 @@ const styles = StyleSheet.create({
     padding: Platform.OS === 'ios' ? 15 : 10,
     marginTop: 29,
     borderRadius: 7,
-  },
-  skillButton: {
-    backgroundColor: '#1f1e25',
-    padding: 17,
-    borderRadius: 50,
-    alignItems: 'center',
-    marginBottom: 11,
-  },
-  skillText: {
-    color: '#fff',
-    fontSize: 19,
-    fontWeight: '700',
   },
 });
