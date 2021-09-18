@@ -1,5 +1,5 @@
 /* eslint-disable react-native/no-inline-styles */
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   View,
   Text,
@@ -7,6 +7,7 @@ import {
   TextInput,
   Platform,
   FlatList,
+  Alert,
 } from 'react-native';
 import { Button } from '../components/Button';
 import { SkillCard } from '../components/SkillCard';
@@ -20,6 +21,7 @@ export const Home = () => {
   const [skillToAdd, setSkillToAdd] = useState('');
   const [mySkills, setMySkills] = useState<SkillData[]>([]);
   const [greeting, setGreeting] = useState('');
+  const textInput = useRef<TextInput>(null);
 
   function handleAddNewSkill() {
     if (skillToAdd === '') {
@@ -31,13 +33,29 @@ export const Home = () => {
       skill: skillToAdd,
     };
 
+    if (textInput.current) {
+      textInput.current.clear();
+      setSkillToAdd('');
+    }
+
     setMySkills(myCurrentSkills => [...myCurrentSkills, data]);
   }
 
   function handleRemoveSkill(id: string) {
-    setMySkills(myCurrentSkills =>
-      myCurrentSkills.filter(item => item.id !== id),
-    );
+    Alert.alert('Delete Skill', 'Are you sure you want to delete this skill?', [
+      {
+        text: 'Cancel',
+        style: 'cancel',
+      },
+      {
+        text: 'Delete',
+        onPress: () =>
+          setMySkills(myCurrentSkills =>
+            myCurrentSkills.filter(item => item.id !== id),
+          ),
+        style: 'destructive',
+      },
+    ]);
   }
 
   useEffect(() => {
@@ -64,6 +82,8 @@ export const Home = () => {
         placeholder="New skill"
         placeholderTextColor="#556"
         onChangeText={setSkillToAdd}
+        ref={textInput}
+        autoCorrect={false}
       />
 
       <Button onPress={handleAddNewSkill} text="Add" />
@@ -83,6 +103,7 @@ export const Home = () => {
             text={item.skill}
           />
         )}
+        showsVerticalScrollIndicator={false}
       />
     </View>
   );
