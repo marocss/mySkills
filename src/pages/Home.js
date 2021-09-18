@@ -1,26 +1,43 @@
 /* eslint-disable react-native/no-inline-styles */
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
   StyleSheet,
   TextInput,
   Platform,
-  TouchableOpacity,
-  // SafeAreaView,
+  FlatList,
 } from 'react-native';
+import { Button } from '../components/Button';
+import { SkillCard } from '../components/SkillCard';
 
-export function Home() {
+export const Home = () => {
   const [skillToAdd, setSkillToAdd] = useState('');
   const [mySkills, setMySkills] = useState([]);
+  const [greeting, setGreeting] = useState('');
 
   function handleAddNewSkill() {
     setMySkills(myCurrentSkills => [...myCurrentSkills, skillToAdd]);
   }
 
+  useEffect(() => {
+    const currentHour = new Date().getHours();
+
+    if (currentHour < 12) {
+      setGreeting('Good morning!');
+    } else if (currentHour < 12 && currentHour < 18) {
+      setGreeting('Good afternoon!');
+    } else {
+      setGreeting('Good night!');
+    }
+  }, []);
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Yo, Marcos Roberto Leite Junior.</Text>
+
+      <Text style={styles.greetings}>{greeting}</Text>
+
       <Text style={styles.subTitle}>Add a new skill.</Text>
       <TextInput
         style={styles.input}
@@ -28,31 +45,21 @@ export function Home() {
         placeholderTextColor="#556"
         onChangeText={setSkillToAdd}
       />
-      <TouchableOpacity
-        style={styles.button}
-        activeOpacity={0.77789}
-        onPress={handleAddNewSkill}>
-        <Text style={styles.buttonText}>Add</Text>
-      </TouchableOpacity>
 
-      {mySkills.length > 0 ? (
-        <>
-          <Text style={[styles.title, { marginTop: 47, marginBottom: 17 }]}>
-            My Skills
-          </Text>
-          {mySkills.map(skill => (
-            <TouchableOpacity
-              key={skill}
-              style={styles.skillButton}
-              activeOpacity={0.77789}>
-              <Text style={styles.skillText}>{skill}</Text>
-            </TouchableOpacity>
-          ))}
-        </>
-      ) : null}
+      <Button onPress={handleAddNewSkill} />
+
+      <Text style={[styles.title, { marginTop: 47, marginBottom: 17 }]}>
+        My Skills
+      </Text>
+
+      <FlatList
+        data={mySkills}
+        key={item => item}
+        renderItem={({ item }) => <SkillCard skill={item} />}
+      />
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -66,10 +73,15 @@ const styles = StyleSheet.create({
     fontSize: 23,
     fontWeight: '800',
   },
-  subTitle: {
+  greetings: {
+    marginTop: 7,
     color: '#fff',
     fontSize: 13,
     fontWeight: '600',
+  },
+  subTitle: {
+    color: '#fff',
+    fontSize: 13,
     marginTop: 11,
   },
   input: {
@@ -77,20 +89,8 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 17,
     padding: Platform.OS === 'ios' ? 15 : 10,
-    marginTop: 30,
+    marginTop: 29,
     borderRadius: 7,
-  },
-  button: {
-    backgroundColor: '#a370f7',
-    padding: Platform.OS === 'ios' ? 15 : 10,
-    borderRadius: 7,
-    alignItems: 'center',
-    marginTop: 17,
-  },
-  buttonText: {
-    color: '#fff',
-    fontSize: 17,
-    fontWeight: '700',
   },
   skillButton: {
     backgroundColor: '#1f1e25',
