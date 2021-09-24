@@ -18,19 +18,19 @@ interface SkillData {
 }
 
 export const Home = () => {
-  const [skillToAdd, setSkillToAdd] = useState('');
+  const [skill, setSkillToAdd] = useState('');
   const [mySkills, setMySkills] = useState<SkillData[]>([]);
   const [greeting, setGreeting] = useState('');
   const textInput = useRef<TextInput>(null);
 
   function handleAddNewSkill() {
-    if (skillToAdd === '') {
+    if (skill === '') {
       return;
     }
 
     const data = {
       id: String(new Date().getTime()),
-      skill: skillToAdd,
+      skill: skill,
     };
 
     if (textInput.current) {
