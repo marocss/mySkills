@@ -1,9 +1,9 @@
 import React from 'react';
 import {
-  TouchableOpacity,
-  TouchableOpacityProps,
   StyleSheet,
   Text,
+  TouchableOpacity,
+  TouchableOpacityProps,
 } from 'react-native';
 
 interface SkillCardProps extends TouchableOpacityProps {
@@ -11,12 +11,11 @@ interface SkillCardProps extends TouchableOpacityProps {
 }
 
 export const SkillCard = ({ text, ...rest }: SkillCardProps) => {
+  const { skillButton, skillText } = styles;
+
   return (
-    <TouchableOpacity
-      style={styles.skillButton}
-      activeOpacity={0.77789}
-      {...rest}>
-      <Text style={styles.skillText}>{text}</Text>
+    <TouchableOpacity style={skillButton} activeOpacity={0.77789} {...rest}>
+      <Text style={skillText}>{text}</Text>
     </TouchableOpacity>
   );
 };
